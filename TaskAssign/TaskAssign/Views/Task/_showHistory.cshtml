@@ -1,0 +1,14 @@
+﻿@model TaskAssign.Models.History
+
+@if(Model!= null)
+{
+<div style="font-family:Consolas;font-size:10px;">
+    @Html.Raw(Model.Messages)
+</div>
+}
+
+<script>
+    function openReason(elem) {
+        $(elem).parent().find('.reasonDiv').toggle();
+    }
+</script>

@@ -1,0 +1,175 @@
+﻿@model TaskAssign.Models.TaskList
+
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_Layout_Users.cshtml";
+}
+
+<style>
+    .menuList {
+        float: left;
+        padding: 3px;
+        cursor: pointer;
+        border: 2px solid transparent;
+        margin: 2px;
+        position:relative;
+    }
+
+        .menuList:hover {
+            border-top: 2px solid #0094ff;
+        }
+
+    .tabSel {
+        border-bottom: 2px solid #0094ff;
+        color: #0094ff;
+    }
+
+    .notify {
+        position: absolute;
+        margin-top: -30px;
+        height: 10px;
+        min-width: 10px;
+        background-color: blue;
+        color: white;
+        font-family:Consolas;
+        font-size:10px;
+        font-weight:bold;
+        text-align:center;
+        padding:2px;
+        right:-10px;
+        border-radius:20px;
+        border-bottom-left-radius:0px;
+        
+    }
+</style>
+<div style="float: left; width: 320px; padding: 3px; border: 1px solid;">
+    <h2>Create</h2>
+
+    @using (Html.BeginForm("SaveTask", "Task"))
+    {
+        @Html.ValidationSummary(true)
+
+        <fieldset>
+            <legend>TaskList</legend>
+
+
+            
+            <div class="editor-field">
+                @Html.DropDownListFor(model => model.TaskType, (SelectList)ViewBag.taskTypeList, "-- Task Type --")
+                @Html.ValidationMessageFor(model => model.TaskType)
+            </div>
+
+            
+            <div class="editor-field">
+                @Html.TextBoxFor(model => model.Title, new { placeholder ="Title"})
+                @Html.ValidationMessageFor(model => model.Title)
+            </div>
+
+            
+            <div class="editor-field">
+                @Html.TextAreaFor(model => model.Description, new { placeholder ="Description"})
+                @Html.ValidationMessageFor(model => model.Description)
+            </div>
+
+            
+            <div class="editor-field">
+                @Html.TextBoxFor(model => model.ModuleName, new { placeholder ="Module Name"})
+                @Html.ValidationMessageFor(model => model.ModuleName)
+            </div>
+
+           
+            <div class="editor-field">
+                @Html.DropDownListFor(model => model.Priority, (SelectList)ViewBag.priorityList, "-- Priority --")
+                @Html.ValidationMessageFor(model => model.Priority)
+            </div>
+
+
+            
+            <div class="editor-field">
+                @Html.TextBoxFor(model => model.Comments, new { placeholder ="Comments"})
+                @Html.ValidationMessageFor(model => model.Comments)
+            </div>
+
+            <p>
+                <input type="submit" value="Submit" />
+            </p>
+        </fieldset>
+    }
+
+</div>
+<div style="padding: 3px;">
+    <div style="position: relative;">
+        <ul style="padding: 0px">
+
+            <li style="list-style: none;" id="Pool" class="menuList" onclick="ChangeTab(this)">Pool @if (ViewBag.PendingList > 0)
+                                                                                                    {<div class='notify'>@ViewBag.PendingList </div>}
+            </li>
+            @if (ViewBag.RoleId == 4)
+            { 
+                <li style="list-style: none;" id="Posted" class="menuList" onclick="ChangeTab(this)">My Post @if (ViewBag.MyList > 0)
+                                                                                                             {<div class='notify'>@ViewBag.MyList</div>}
+                </li>
+            }
+            else
+            {
+                <li style="list-style: none;" id="Assign" class="menuList" onclick="ChangeTab(this)">Assigned @if (ViewBag.AssignedList > 0)
+                                                                                                              {<div class='notify'>@ViewBag.AssignedList</div>}
+                </li>
+            }
+            <li style="list-style: none;" id="Working" class="menuList" onclick="ChangeTab(this)">Working @if (ViewBag.WorkingList > 0)
+                                                                                                          {<div class='notify'>@ViewBag.WorkingList</div>}
+            </li>
+            <li style="list-style: none;" id="Rejected" class="menuList" onclick="ChangeTab(this)">Rejected @if (ViewBag.RejectedList > 0)
+                                                                                                            {<div class='notify'>@ViewBag.RejectedList</div>}
+            </li>
+            <li style="list-style: none;" id="Reopened" class="menuList" onclick="ChangeTab(this)">Reopened @if (ViewBag.ReOpenList > 0)
+                                                                                                            {<div class='notify'>@ViewBag.ReOpenList</div>}
+            </li>
+            <li style="list-style: none;" id="Completed" class="menuList" onclick="ChangeTab(this)">Completed @if (ViewBag.CompletedList > 0)
+                                                                                                              {<div class='notify'>@ViewBag.CompletedList</div>}
+            </li>
+            <li style="list-style: none;" id="Closed" class="menuList" onclick="ChangeTab(this)">Closed @if (ViewBag.CloseList > 0)
+                                                                                                        {<div class='notify'>@ViewBag.CloseList</div>}
+            </li>
+            <li style="list-style: none;" id="Requested" class="menuList" onclick="ChangeTab(this)">Requested @if (ViewBag.RequestedList > 0)
+                                                                                                              {<div class='notify'>@ViewBag.RequestedList</div>}
+            </li>
+
+        </ul>
+        @if (ViewBag.RoleId == 1 || ViewBag.RoleId == 2)
+        { 
+            <div style="position: absolute; right: 0px;">
+                @Html.DropDownList("MembersList", (SelectList)ViewBag.AllMembersList, "All", new { id = "filterMemeberList", style = "width:100px;" })
+            </div>
+        }
+
+    </div>
+    <div class="tabDiv" style="float: left; width: 65%; display: block;">
+    </div>
+
+
+</div>
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#Pool').trigger('click');
+
+        });
+        function ChangeTab(elem) {
+            var tabId = $(elem).attr('id');
+            var memeberId = 0;
+            if ($('#filterMemeberList').length > 0) {
+                memeberId = $('#filterMemeberList').val();
+            }
+            if (memeberId == "") {
+                memeberId = 0;
+            }
+            $('.tabDiv').load('/Task/_ListTasks', { type: tabId, memberId: memeberId });
+
+            $('.menuList').removeClass('tabSel');
+            $(elem).addClass('tabSel');
+        }
+    </script>
+}
+

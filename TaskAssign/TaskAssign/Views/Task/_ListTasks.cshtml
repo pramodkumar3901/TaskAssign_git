@@ -1,0 +1,323 @@
+﻿@model IEnumerable<TaskAssign.Models.TaskList>
+
+<style>
+    .layer3 a {
+        float: left;
+        margin-right: 3px;
+        font-weight: bold;
+        font-size: 10px;
+    }
+</style>
+<table style="width: 700px;">
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                <div style="float: left; padding: 3px; border: 2px solid; width: 100%; margin-top: 20px;">
+                    <div style="position: relative;">
+                        <div onclick="showComment(this)" style="font-family: Consolas; font-size: 10px; margin-top: -20px; cursor: pointer; text-align: center; border: 1px solid; padding: 1px; width: 50px; float: right;">History</div>
+                        <div class="commentDiv" style="right: 0px; font-family: Consolas; font-size: 10px; position: absolute; z-index:10; display: none; background-color: white; padding: 3px; border: 1px dashed blue;">
+                            @Html.Action("_showHistory", "Task", new { id = item.TaskId })
+                        </div>
+                    </div>
+                    @{string color = "";
+                      if (item.InitStausName == "Open" && item.DueDate < DateTime.Now)
+                      {
+                          color = "background-color:red;";
+                      }
+                    }
+                    <div class="layer" style="float: left;@color width: 100%; border-bottom: 1px solid #ccc;">
+
+                        <div title="Task Id" style="float: left; width: 50px; font-size: 10px; font-family: Consolas;">#@Html.DisplayFor(modelItem => item.TaskId)</div>
+                        <div title="Task Type" style="float: left; font-size: 10px; font-family: Consolas;">@Html.DisplayFor(modelItem => item.TaskTypeName)</div>
+                        <div title="Module Name" style="float: left; font-size: 10px; font-family: Consolas;">&nbsp;&gt;&gt;&nbsp;@Html.DisplayFor(modelItem => item.ModuleName)</div>
+
+                        <div title="Priority" style="float: right; font-size: 10px; font-family: Consolas;">@Html.DisplayFor(modelItem => item.PriorityName)</div>
+                    </div>
+
+                    <div class="layer" style="float: left; width: 100%;">
+                        <div title="Title" style="font-weight: bold; cursor: pointer; font-size: 14px;" onclick="javascript: $(this).parent().find('.descDiv').toggle();">@Html.DisplayFor(modelItem => item.Title)</div>
+                        <div style="padding-left: 5px; border-left: 2px double #8f8f8f; text-align: justify; display: none;" title="Desccription" class="descDiv">@Html.Raw(item.Description)</div>
+                    </div>
+
+                    <div class="layer" style="float: left; width: 100%; border-top: 1px solid #ccc;">
+
+                        @if (item.TesterStausName == "Re-Open")
+                        { 
+                            <div>
+                                <div onclick="javascript: $(this).parent().find('.rejectReasonDiv').toggle();" title="Tester Status" style="cursor: pointer; color: red; font-weight: bold; float: left; font-size: 10px; font-family: Consolas;">@Html.DisplayFor(modelItem => item.TesterStausName)</div>
+                                <div class="rejectReasonDiv" style="margin-top: 10px; font-family: Consolas; font-size: 10px; position: absolute; display: none; background-color: white; padding: 3px; border: 2px dashed blue;">
+                                    @Html.Raw(item.RejectReason)
+                                </div>
+                            </div>
+                        }
+                        else if (item.TesterStausName == "Closed")
+                        { 
+                            <div>
+                                <div onclick="javascript: $(this).parent().find('.rejectReasonDiv').toggle();" title="Tester Status" style="cursor: pointer; color: green; font-weight: bold; float: left; font-size: 10px; font-family: Consolas;">@Html.DisplayFor(modelItem => item.TesterStausName)</div>
+                                <div class="rejectReasonDiv" style="margin-top: 10px; font-family: Consolas; font-size: 10px; position: absolute; display: none; background-color: white; padding: 3px; border: 2px dashed blue;">
+                                    @Html.Raw(item.RejectReason)
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <div title="Initial Status" style="float: left; font-size: 10px; font-family: Consolas;">@Html.DisplayFor(modelItem => item.InitStausName)</div>
+                        }
+
+                        @if (item.InitStausName == "Assigned" || item.InitStausName == "Open" || item.InitStausName == "Closed")
+                        {   <div style="float: left; font-size: 10px; font-family: Consolas;">&nbsp;=>&nbsp;</div>
+                            <div title="Assigned To" style="float: left; font-size: 10px; font-family: Consolas;">@Html.DisplayFor(modelItem => item.AssignedByName)</div>
+                            
+                            if (item.DevStausName == "Rejected")
+                            {
+                            <div>
+                                <div onclick="javascript: $(this).parent().find('.rejectReasonDiv').toggle();" style="float: left; font-size: 10px; font-family: Consolas;color:red;text-decoration:underline;cursor:pointer;" title="@item.RejectReason">[@Html.DisplayFor(modelItem => item.DevStausName)]</div>
+
+                                <div class="rejectReasonDiv" style="margin-top: 10px; font-family: Consolas; font-size: 10px; position: absolute; display: none; background-color: white; padding: 3px; border: 2px dashed blue;">
+                                    @Html.Raw(item.RejectReason)
+                                </div>
+                            </div>
+                            }
+                            else
+                            {
+                            <div title="Dev Status" style="float: left; font-size: 10px; font-family: Consolas;">[@Html.DisplayFor(modelItem => item.DevStausName)]</div>
+                            }
+
+                            if (item.InitStausName == "Open" || item.InitStausName == "Closed")
+                            {
+                                if (item.AllottedHrs > 0)
+                                {
+                            <div title="Due date" style="float: left; color: red; font-size: 10px; font-family: Consolas;">[@Html.DisplayFor(modelItem => item.DueDate)]</div>
+                                }
+                            <div title="Started Date" style="float: left; font-size: 10px; font-family: Consolas;">[@Html.DisplayFor(modelItem => item.StartedDate)]</div>
+                            }
+                            if (item.DevStausName == "Completed")
+                            { 
+                            <div title="Closed Date" style="float: left; font-size: 10px; font-family: Consolas;">[@Html.DisplayFor(modelItem => item.ClosedDate)]</div>
+                            }
+
+                            if (item.TesterStausName == "Closed")
+                            { 
+                            <div title="Tester Status" style="color: green; font-weight: bold; float: left; font-size: 10px; font-family: Consolas;">[@Html.DisplayFor(modelItem => item.TesterStausName)]</div>
+                            }
+
+                        }
+
+                        <div title="Posted By and Date" style="float: right; font-size: 10px; font-family: Consolas;">@Html.DisplayFor(modelItem => item.PostedByName) [<span style="font-style: italic; font-size: 9px;">@Html.DisplayFor(modelItem => item.PostedDate)</span>]</div>
+                    </div>
+
+
+                    @if (ViewBag.Role < 4)
+                    {
+                        <div class="layer3" style="float: right; width: 100%; border-top: 1px solid gray;">
+
+                            @*ASSING/RE-ASSIGN BUTTONS  *@
+
+                            @if (Convert.ToInt32(Session["Role"].ToString()) < 3)
+                            {
+                                if (item.InitStausName == "Open")
+                                {
+                                <a style="cursor:pointer" onclick = "showAssign('@item.TaskId')" >Re-Assign</a>
+                                }
+                                else
+                                {
+                                <a style="cursor:pointer" onclick = "showAssign('@item.TaskId')" >Assign</a>
+                                }
+                            }
+
+@* ACCEPT/REJECT BUTTONS *@
+
+                            @if (Convert.ToInt32(Session["Role"].ToString()) < 4)
+                            {
+                                if (item.InitStausName == "Pending" || item.InitStausName == "Assigned" || item.InitStausName == "Open")
+                                {
+                                    if (item.InitStausName != "Open")
+                                    {
+                                @Html.ActionLink("Accept", "DevAccepted", "Task", new { id = item.TaskId }, null)
+                                        if (item.DevStausName != "Rejected")
+                                        {
+                               
+                                    <a style="cursor: pointer;" onclick = "showReject('@item.TaskId')">Reject</a>
+                               
+                                        }
+                                    }
+                                    else
+                                    {
+                                        if (item.AssignedTo == Convert.ToInt32(Session["Userid"].ToString()) && item.InitStausName == "Open")
+                                        {
+                                            if (item.DevStausName == "Working")
+                                            {
+                                @Html.ActionLink("Completed", "DevCompleted", "Task", new { id = item.TaskId }, null)
+                                
+                                    <a style="cursor: pointer;" onclick = "showReject('@item.TaskId')">Reject</a>
+                               
+                                       
+                                            }
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                @Html.ActionLink("Accept", "DevAccepted", "Task", new { id = item.TaskId }, null)
+                                    if (item.DevStausName != "Rejected")
+                                    {
+                               
+                                    <a style="cursor: pointer;" onclick = "showReject('@item.TaskId')">Reject</a>
+                                 
+                                    }
+                                }
+                            }
+
+@* EDIT/DELETE BUTTONS *@
+
+                            @if (Convert.ToInt32(Session["UserId"].ToString()) == item.PostedBy && item.InitStausName != "Open")
+                            {
+                                <a style="cursor:pointer" onclick = "showEdit('@item.TaskId')" >Edit</a>
+                                @Html.ActionLink("Delete", "Delete", "Task", new { id = item.TaskId }, null)
+
+                            }
+
+@* COMMENTS BUTTON *@
+
+                            @if (item.Comments != null)
+                            {
+                                <div style="float: right;">
+                                    <div style="color: blue; font-family: Consolas; font-size: 10px; cursor: pointer;" onclick="showComment(this)">Comments</div>
+                                    <div class="commentDiv" style="z-index:10; font-family: Consolas; font-size: 10px; position: absolute; display: none; background-color: white; padding: 3px; border: 2px dashed blue;">
+                                        @Html.DisplayFor(modelItem => item.Comments)
+                                    </div>
+                                </div>
+                            }
+
+@* REQUEST BUTTON *@
+
+                            @if (item.InitStausName == "Open" && item.DueDate < DateTime.Now)
+                            { 
+                                <div style="float: right;">
+                                    @if (item.RequestFlag == false && Convert.ToInt32(Session["UserId"].ToString()) == item.AssignedTo)
+                                    {
+                                        
+                                        <a style="color: blue; font-family: Consolas; font-size: 10px; cursor: pointer;" onclick = "showRequest('@item.TaskId')" >Request</a>
+                                    }
+                                    else if (item.RequestFlag == true)
+                                    {
+                                        
+                                        <a style="color: red; font-family: Consolas; font-size: 10px; cursor: pointer;" onclick = "showRequest('@item.TaskId')" >Requested</a>
+                                    }
+                                   
+                                </div>
+                            }
+
+
+                        </div>
+                    }
+                    else if (ViewBag.Role == 4)
+                    {
+                        <div class="layer3" style="float: right; width: 100%; border-top: 1px solid gray;">
+
+                            @if (item.DevStausName == "Working" || item.DevStausName == "Completed" || item.DevStausName == "Rejected")
+                            {
+
+@*RE-OPN/CLOSE BUTTONS  *@
+
+                                @Html.ActionLink("Close", "Close", "Task", new { id = item.TaskId }, null);
+
+
+                                <div>
+                                    <a style="cursor:pointer" onclick = "showReopen('@item.TaskId')" >Re-open</a>
+                                    
+                                </div>
+
+                                                                                                               
+                            }
+                            else
+                            {
+                                if (Convert.ToInt32(Session["UserId"].ToString()) == item.PostedBy && item.InitStausName != "Open")
+                                {
+                                <a style="cursor:pointer" onclick = "showEdit('@item.TaskId')" >Edit</a>
+                                @Html.ActionLink("Delete", "Delete", "Task", new { id = item.TaskId }, null)
+
+                                }
+                            }
+
+
+                            @if (item.Comments != null)
+                            {
+                                <div style="float: right;">
+                                    <div style="color: blue; font-family: Consolas; font-size: 10px; cursor: pointer;" onclick="showComment(this)">Comments</div>
+                                    <div class="commentDiv" style="z-index:10;font-family: Consolas; font-size: 10px; position: absolute; display: none; background-color: white; padding: 3px; border: 2px dashed blue;">
+                                        @Html.DisplayFor(modelItem => item.Comments)
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
+            </td>
+
+        </tr>
+    }
+
+</table>
+<div class="editDiv" style="font-family:Consolas;font-size:10px; display: none; position: fixed; width: 320px; height: 450px; top: 50%; left: 50%; margin-top: -225px; margin-left: -160px; background-color: white; border: 2px solid; padding: 5px;">
+    <div class="editDetails"></div>
+    <a style="cursor: pointer; float: right;" onclick="javascript: $('.editDiv').fadeOut();" class="closeMe">Close</a>
+</div>
+
+<div class="assignDiv" style="font-family:Consolas;font-size:10px;display: none; position: fixed; width: 320px; height: 150px; top: 50%; left: 50%; margin-top: -75px; margin-left: -160px; background-color: white; border: 2px solid; padding: 5px;">
+    <div class="assignDetails"></div>
+    <a style="cursor: pointer; float: right;margin-top:-30px;" onclick="javascript: $('.assignDiv').fadeOut();" class="closeMe">Close</a>
+</div>
+
+<div class="requestDiv" style="font-family:Consolas;font-size:10px;display: none; position: fixed; width: 320px; height: 360px; top: 50%; left: 50%; margin-top: -180px; margin-left: -160px; background-color: white; border: 2px solid; padding: 5px;">
+    <div class="requestDetails"></div>
+    <a style="cursor: pointer; float: right;" onclick="javascript: $('.requestDiv').fadeOut();" class="closeMe">Close</a>
+</div>
+
+<div class="reopenDiv" style="font-family:Consolas;font-size:10px;display: none; position: fixed; width: 320px; height: 260px; top: 50%; left: 50%; margin-top: -130px; margin-left: -160px; background-color: white; border: 2px solid; padding: 5px;">
+    <div class="reopenDetails"></div>
+    <a style="cursor: pointer; float: right;margin-top:-30px;" onclick="javascript: $('.reopenDiv').fadeOut();" class="closeMe">Close</a>
+</div>
+
+<div class="rejectDiv" style="font-family:Consolas;font-size:10px;display: none; position: fixed; width: 320px; height: 260px; top: 50%; left: 50%; margin-top: -130px; margin-left: -160px; background-color: white; border: 2px solid; padding: 5px;">
+    <div class="rejectDetails"></div>
+    <a style="cursor: pointer; float: right;margin-top:-30px;" onclick="javascript: $('.rejectDiv').fadeOut();" class="closeMe">Close</a>
+</div>
+
+<script>
+    function showEdit(id) {
+        $('.editDetails').load('/Task/_Edit/' + id);
+        $('.editDiv').fadeIn();
+    }
+
+    function showAssign(id) {
+        $('.assignDetails').load('/Task/_AssignTasks/' + id);
+        $('.assignDiv').fadeIn();
+    }
+
+    function showRequest(id) {
+        $('.requestDetails').load('/Task/_RequestTime/' + id);
+        $('.requestDiv').fadeIn();
+    }
+
+    function showReopen(id) {
+        $('.reopenDetails').load('/Task/_ReOpen/' + id);
+        $('.reopenDiv').fadeIn();
+    }
+
+    function showReject(id) {
+        $('.rejectDetails').load('/Task/_RejectWithReason/' + id);
+        $('.rejectDiv').fadeIn();
+    }
+
+    function showComment(elem) {
+        $(elem).parent().find('.commentDiv').toggle();
+    }
+    //function showRequest(elem) {
+    //    $(elem).parent().find('.requestDiv').toggle();
+    //}
+    //function showReopen(elem) {
+    //    $(elem).parent().find('.reopenDiv').toggle();
+    //}
+</script>

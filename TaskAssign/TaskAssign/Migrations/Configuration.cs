@@ -1,0 +1,69 @@
+namespace TaskAssign.Migrations
+{
+    using System;
+    using System.Data.Entity;
+    using System.Data.Entity.Migrations;
+    using System.Linq;
+    using TaskAssign.Models;
+
+    internal sealed class Configuration : DbMigrationsConfiguration<TaskAssign.Models.DatabaseContext>
+    {
+        public Configuration()
+        {
+            AutomaticMigrationsEnabled = false;
+        }
+
+        protected override void Seed(TaskAssign.Models.DatabaseContext context)
+        {
+            //  This method will be called after migrating to the latest version.
+
+            //  You can use the DbSet<T>.AddOrUpdate() helper extension method 
+            //  to avoid creating duplicate seed data. E.g.
+            //
+           // context.Lookups.AddOrUpdate(
+           //   p => p.LookupName,
+           //     //ROLES
+           //   new Lookup { LookupType = "Role", LookupName = "Admin", LookupOrder = 0 },
+           //    new Lookup { LookupType = "Role", LookupName = "Project Manager", LookupOrder = 1 },
+           //   new Lookup { LookupType = "Role", LookupName = "Developer", LookupOrder = 2 },
+           //    new Lookup { LookupType = "Role", LookupName = "Tester", LookupOrder = 3 },
+
+           //   //PRIORITY
+           //   new Lookup { LookupType = "Priority", LookupName = "Critical", LookupOrder = 0 },
+           //   new Lookup { LookupType = "Priority", LookupName = "High", LookupOrder = 1 },
+           //   new Lookup { LookupType = "Priority", LookupName = "Medium", LookupOrder = 2 },
+           //   new Lookup { LookupType = "Priority", LookupName = "Low", LookupOrder = 3 },
+
+           //   //INIT_STATUS
+           //   new Lookup { LookupType = "Init_Status", LookupName = "Pending", LookupOrder = 0 },
+           //   new Lookup { LookupType = "Init_Status", LookupName = "Assigned", LookupOrder = 1 },
+           //   new Lookup { LookupType = "Init_Status", LookupName = "Open", LookupOrder = 2 },
+           //   new Lookup { LookupType = "Init_Status", LookupName = "Closed", LookupOrder = 3 },
+
+           //   //DEV_STATUS
+           //   new Lookup { LookupType = "Dev_Status", LookupName = "Accepted", LookupOrder = 0 },
+           //   new Lookup { LookupType = "Dev_Status", LookupName = "Rejected", LookupOrder = 1 },
+           //   new Lookup { LookupType = "Dev_Status", LookupName = "Working", LookupOrder = 2 },
+           //   new Lookup { LookupType = "Dev_Status", LookupName = "Completed", LookupOrder = 3 },
+           //   new Lookup { LookupType = "Dev_Status", LookupName = "Pending", LookupOrder = 4 },
+           //     //TEST_STATUS
+           //   new Lookup { LookupType = "Test_Status", LookupName = "Re-Open", LookupOrder = 0 },
+           //   new Lookup { LookupType = "Test_Status", LookupName = "Closed", LookupOrder = 1 },
+
+           //    //Task_Type
+           //   new Lookup { LookupType = "Task_Type", LookupName = "Bug", LookupOrder = 0 },
+           //   new Lookup { LookupType = "Task_Type", LookupName = "New Task", LookupOrder = 1 },
+           //   new Lookup { LookupType = "Task_Type", LookupName = "Enhancement", LookupOrder = 2 }
+
+           // );
+
+           // context.Members.AddOrUpdate(
+           //  p => p.UserName,
+           //  new Member { UserName = "pramod", Password = "kumar", RoleId = 1, Name = "Pramod Kumar", Active = true, CreatedOn = DateTime.Now, ModifiedOn = DateTime.Now },
+           //  new Member { UserName = "dev", Password = "dev", RoleId = 3, Name = "Develper", Active = true, CreatedOn = DateTime.Now, ModifiedOn = DateTime.Now },
+           //  new Member { UserName = "test", Password = "test", RoleId = 4, Name = "Tester", Active = true, CreatedOn = DateTime.Now, ModifiedOn = DateTime.Now }
+
+           //);
+        }
+    }
+}

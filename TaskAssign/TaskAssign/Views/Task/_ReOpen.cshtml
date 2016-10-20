@@ -1,0 +1,36 @@
+﻿@model TaskAssign.Models.TaskList
+
+<script src="~/Scripts/jquery-1.7.1.min.js"></script>
+<script src="~/Scripts/jquery.validate.min.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+
+    @using (Html.BeginForm(new { id = Model.TaskId }))
+    {
+        Html.ValidationSummary(true);
+
+    <fieldset>
+        <legend>TaskList</legend>
+
+        <div class="editor-label">
+           <label>Re-Open Reason</label>
+        </div>
+
+        <div style="height:150px; border-left:2px solid #ccc;overflow-y:auto;padding:1px;">
+            @Html.Raw(Model.RejectReason)
+        </div>
+
+        <div class="editor-field">
+            @Html.TextArea("RejectReason", "", new { @Value = "" })
+            @Html.ValidationMessageFor(model => model.RejectReason)
+        </div>
+        <p>
+            <input type="submit" value="Submit" />
+        </p>
+        
+    </fieldset>
+    
+
+
+}
+
+
